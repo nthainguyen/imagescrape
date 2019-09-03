@@ -29,9 +29,7 @@ class Crawler(scrapy.Spider):
                 yield img['high_res_link']
         else:
             original = response.css('div.original > a::attr(href)').get()
-            r = requests.get(original)
-            with open(original[::-15], 'wb') as f:
-                f.write(r.content)
+            wget.download(original)
             yield {
                 'id': original
             }
