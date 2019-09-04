@@ -22,14 +22,15 @@ class Crawler(scrapy.Spider):
             yield scrapy.Request(response.urljoin(next_page_url))
 
     def parse_item(self, response):
-        data_items = response.css('div.carousel-widget::attr(data_items)').get()
+        data_items = response.css('div#item-carousel::attr(data-items)').get()
         if data_items:
-            sub_imgs = json.loads(data_items)
-            for img in sub_imgs:
-                yield img['high_res_link']
+            data = json.loads(data_items)
+            for i in data:
+                yield {
+                    'links': i['high_res_link']
+                }
         else:
             original = response.css('div.original > a::attr(href)').get()
-            wget.download(original)
             yield {
                 'id': original
             }
